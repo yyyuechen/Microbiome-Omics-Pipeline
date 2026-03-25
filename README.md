@@ -8,6 +8,8 @@ This repository contains scripts and workflows used for the analysis of metageno
 
 ## Metagenomes
 
+All scripts saved in Metagenomic_general_analysis
+
 ### 1)Quality control
 
 Read trimming and filtering
@@ -39,6 +41,38 @@ Completeness and contamination estimation
 ### 8)Taxonomic annotation
 
 Classification of MAGs
+
+### 9)Functional annotation
+
+Gene prediction and pathway analysis
+
+### 10)Quantification and visualization
+
+Coverage, abundance, and gene expression analyses
+
+## Metatranscriptomes
+
+All scripts saved in Metatranscriptomic_general_analysis
+
+### 1)Quality control
+
+Read trimming and filtering
+
+### 2)Remove rRNA
+
+Remove ribosomal RNA (rRNA) reads from metatranscriptomic datasets to retain only protein-coding transcripts for functional and expression analysis.
+
+### 3)Estimate average coverage for metagenomic datasets
+
+Check if sequencing depth is sufficient to recover most genomes
+
+### 4)Quick taxonomic assignment
+
+Taxonomic assignment based on conserved marker genes (e.g., rplB)
+
+### 5)Metatranscriptomic co-assembly
+
+Co-assembly of high-quality reads into contigs
 
 ### 9)Functional annotation
 
