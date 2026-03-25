@@ -16,7 +16,7 @@ Read trimming and filtering
 
 ### 2)Estimate average coverage for metagenomic datasets
 
-Check if sequencing depth is sufficient to recover most genomes
+Evaluate whether sequencing depth is sufficient to capture most community sequence diversity.
 
 ### 3)Quick taxonomic assignment
 
@@ -62,9 +62,9 @@ Read trimming and filtering
 
 Remove ribosomal RNA (rRNA) reads from metatranscriptomic datasets to retain only protein-coding transcripts for functional and expression analysis.
 
-### 3)Estimate average coverage for metagenomic datasets
+### 3)Estimate average coverage for metatranscriptomic datasets
 
-Check if sequencing depth is sufficient to recover most genomes
+Evaluate whether sequencing depth is sufficient to capture the biodiversity signal of the transcriptionally active community.
 
 ### 4)Quick taxonomic assignment
 
@@ -74,10 +74,26 @@ Taxonomic assignment based on conserved marker genes (e.g., rplB)
 
 Co-assembly of high-quality reads into contigs
 
-### 9)Functional annotation
+### 6) Identify non-redundant genes
 
-Gene prediction and pathway analysis
+Extract and cluster assembled transcripts or predicted coding sequences to generate a non-redundant gene set for downstream taxonomic, functional, and expression analyses.
 
-### 10)Quantification and visualization
+### 7) Assess assembly quality
 
-Coverage, abundance, and gene expression analyses
+Evaluate metatranscriptome assembly quality using metrics such as contig length distribution, N50, read mapping rate, and transcript completeness to determine overall assembly reliability.
+
+### 8) Assess assembly representation and redundance
+
+Assess assembly completeness and redundancy by remapping reads to the assembly and examining mapping recovery, multi-mapping patterns, and redundancy among highly similar transcripts.
+
+### 9) Taxonomic annotation
+
+Assign taxonomic identities to assembled transcripts or predicted genes to characterize the composition of the transcriptionally active microbial community.
+
+### 10) Functional annotation
+
+Annotate predicted genes against functional databases to identify metabolic pathways, gene families, and biological functions represented in the metatranscriptome.
+
+### 11) Gene quantification
+
+Quantify transcript or gene abundance by mapping reads back to the non-redundant gene catalog or assembled transcripts to estimate expression levels across samples.
