@@ -8,7 +8,7 @@ This repository contains scripts and workflows used for the analysis of metageno
 
 ## Metagenomes
 
-All scripts saved in Metagenomic_general_analysis
+All scripts saved in Metagenomic_general_scripts
 
 ### 1)Quality control
 
@@ -52,7 +52,7 @@ Coverage, abundance, and gene expression analyses
 
 ## Metatranscriptomes
 
-All scripts saved in Metatranscriptomic_general_analysis
+All scripts saved in Metatranscriptomic_general_scripts
 
 ### 1)Quality control
 
