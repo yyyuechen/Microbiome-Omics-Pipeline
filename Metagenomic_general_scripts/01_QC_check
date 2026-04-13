@@ -1,0 +1,10 @@
+#!/bin/bash
+
+mkdir -p trim_galore_results
+
+for i in *_R1.fastq.gz; do
+  m=${i%%_R1.fastq.gz}
+  n=${m}_R2.fastq.gz
+  trim_galore --paired -j 16 --fastqc "$i" "$n" -o ./trim_galore_results --no_report_file
+done
+
