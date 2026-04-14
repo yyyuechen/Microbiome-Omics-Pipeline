@@ -1,0 +1,17 @@
+#!/bin/bash
+source /path/to/your/directory/miniforge/bin/activate
+conda activate /path/to/your/directory/conda_fairy
+
+#1) generate fairy index
+# Gather all files that end with R1_val_1.fq, separated by spaces
+left_reads=$(ls *_R1_val_1.fq | tr '\n' ' ')
+
+# Gather all files that end with R2_val_2.fq, separated by spaces
+right_reads=$(ls *_R2_val_2.fq | tr '\n' ' ')
+
+# Generate the fairy sketch command without commas between file names
+fairy sketch -1 $left_reads -2 $right_reads -d sketches
+
+#2) fairy_coverage
+fairy coverage -t 30 /path/to/your/directory/fairy_index/*.bcsp final.contigs.fa -o coverage_matrix.tsv
+#final.contigs.fa is an output saved in final_megahit.out
