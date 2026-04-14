@@ -1,8 +1,8 @@
 #!/bin/bash
 module load fastp/0.23.2 
 
-for i in *_R1.fastq.gz; do 
+for i in *_R1.fastq.gz; do
   m=${i%%_R1.fastq.gz}
-  n=${i%%_R1.fastq.gz}c
-  fastp -i $i -I $n -o fastp_${m}_R1.fastq.gz -O fastp_${m}_R2.fastq.gz -h fastp_${m}.html -j fastp_${m}.json
+  n=${m}_R2.fastq.gz
+  fastp -i "$i" -I "$n" -o "fastp_${m}_R1.fastq.gz" -O "fastp_${m}_R2.fastq.gz" -h "fastp_${m}.html" -j "fastp_${m}.json"
 done
