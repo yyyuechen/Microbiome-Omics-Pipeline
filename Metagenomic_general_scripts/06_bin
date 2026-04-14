@@ -1,0 +1,4 @@
+#!/bin/bash
+
+module load metabat/2.15.0
+metabat2 -i 250_final.contigs.fa -a coverage_matrix.tsv  -t 16 -m 1500 -o 250_final_bins
