@@ -1,0 +1,11 @@
+#!/bin/bash
+module load megahit/1.2.9 
+# Gather all files that end with R1_val_1.fq.gz, separated by commas
+left_reads=$(ls *_R1_val_1.fq.gz | tr '\n' ',' | sed 's/,$//')
+
+# Gather all files that end with R2_val_2.fq.gz, separated by commas
+right_reads=$(ls *_R2_val_2.fq.gz | tr '\n' ',' | sed 's/,$//')
+
+# Run MEGAHIT with the gathered left and right reads
+megahit -1 $left_reads -2 $right_reads -o final_megahit.out -t 32 -m 200000000 --min-contig-len 250
+
