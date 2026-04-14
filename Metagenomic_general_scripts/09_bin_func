@@ -34,5 +34,40 @@ for file in *.faa; do
     python3 $EGGNOG_MAPPER/emapper.py -i "$base_name".faa -o "$base_name"_RAST_eggnog --cpu 34 -m diamond
 done
 
+#3)functional annotation using kemet
+for file in /path/to/your/directory/*.eggnog.emapper.annotations; do
+  base_name=$(basename "${file%.eggnog.emapper.annotations}")
+  ./path/to/your/directory/KEMET/kemet.py "/path/to/your/directory/${base_name}.eggnog.emapper.annotations" -a eggnog --skip_hmm --skip_gsmm --no_genome --as_kegg
+done
+
+#4)functional annotation using kofamscan
+for file in *_prokka.fasta; do
+    base_name=${file%_prokka.fasta} #_prokka.fasta files are actually renamed from faa files from prokka, as faa files must end with .fasta when using kofamscan
+    exec_annotation -f mapper \
+    -o "$base_name"_koala.txt $file -p /path/to/your/directory/KoFamDB20241013/profiles/ \
+    -k /path/to/your/directory/KoFamDB20241013/ko_list --cpu 34 --tmp-dir . -E 1e-5
+done
+
+for file in arc_*_koala.txt; do
+    base_name=${file%_koala.txt}
+    KEGG-decoder --input $file --output  "$base_name"_KEGGDecoder.list  --vizoption static
+done
+
+
+for file in bac_*_koala.txt; do
+    base_name=${file%_koala.txt}
+    KEGG-decoder --input $file --output  "$base_name"_KEGGDecoder.list  --vizoption static
+done
+
+
+
+
+
+
+
+
+
+
+
 
 
