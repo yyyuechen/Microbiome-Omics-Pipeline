@@ -1,0 +1,12 @@
+#!/bin/bash
+
+#1)to assign taxonomy to your good quality bins
+gtdbtk classify_wf --genome /path/to/your/directory/good_250bins\
+ --out_dir /path/to/your/directory/gtdb_result\
+  --extension fasta --cpus 16\
+   --mash_db /path/to/your/directory/gtdb_db
+
+#2)optional: to have a phylogenetic tree, but notice that the tree is seperated from bacteria to archaea (of course;D)
+
+gtdbtk infer --msa_file /path/to/your/directory/gtdb_result/align/gtdbtk.ar53.user_msa.fasta.gz --out_dir gtdb_tree_out_arc --cpus 24
+
