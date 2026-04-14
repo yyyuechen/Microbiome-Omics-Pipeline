@@ -1,0 +1,38 @@
+#!/bin/bash
+
+#In this step, I usually prefer to use different tools for functional annotation and then compare the results across methods. Alternatively, the results can be combined, although this is a more aggressive strategy and requires additional justification, such as validation against known reference gene or protein sequences.
+
+#1) functional annotation using metabolic
+module load metabolic/4.0
+
+METABOLIC-C.pl -t 34 -in-gn /path/to/your/directory/good_250bins \
+   -r /path/to/your/directory/raw_ref_read.txt\
+    -o/path/to/your/directory/metabolic_result
+
+#2)functional annotation using eggnog
+module load eggnog-mapper/2.1.12 
+module load prokka/1.14.6
+
+for file in arc_*.fa; do
+    base_name=${file%.fa} 
+    prokka --outdir ./"$base_name"_prokka_annotation --prefix "$base_name" --metagenome --kingdom Archaea --cpus 34 $file --centre X --compliant
+done
+
+for file in bac_*.fa; do
+    base_name=${file%.fa} 
+    prokka --outdir ./"$base_name"_prokka_annotation --prefix "$base_name" --metagenome --kingdom Bacteria --cpus 34 $file --centre X --compliant
+done
+
+#from previous step we will have all faa files for each bin
+#we then use these faa files for functional annotation via eggnog
+for file in *.faa; do
+    base_name=${file%.faa} #use .faa file from prokka
+    if [[ -f "${base_name}_RAST_eggnog.emapper.annotations" ]]; then
+    echo "🔹 Skipping ${base_name}, ${base_name}_eggnog.emapper.annotations already exists."
+    continue
+  fi
+    python3 $EGGNOG_MAPPER/emapper.py -i "$base_name".faa -o "$base_name"_RAST_eggnog --cpu 34 -m diamond
+done
+
+
+
