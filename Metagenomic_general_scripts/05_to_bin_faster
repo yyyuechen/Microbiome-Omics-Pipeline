@@ -13,5 +13,8 @@ right_reads=$(ls *_R2_val_2.fq | tr '\n' ' ')
 fairy sketch -1 $left_reads -2 $right_reads -d sketches
 
 #2) fairy_coverage
-fairy coverage -t 30 /path/to/your/directory/fairy_index/*.bcsp final.contigs.fa -o coverage_matrix.tsv
+bioawk -c fastx '{ if(length($seq) > 250) { print ">"$name; print $seq }}' final.contigs.fa > 250_final.contigs.fa
+#keep contigs longer than 250 bp
+fairy coverage -t 30 ../fairy_index/*.bcsp  250_final.contigs.fa -o coverage_matrix.tsv
+
 #final.contigs.fa is an output saved in final_megahit.out
