@@ -1,0 +1,12 @@
+#!/bin/bash
+
+module load checkm2/1.0.2 
+checkm2 predict --threads 30 --input /path/to/your/directory/250_bins --output-directory /path/to/your/directory/checkm2_results_250bins
+
+module load gunc
+gunc run --input_dir /path/to/your/directory/250_bins\
+ -r /path/to/your/directory/gunc/gunc_db_progenomes2.1.dmnd --file_suffix fa\
+  --out_dir /path/to/your/directory/250_bins/gunc_result\
+   --contig_taxonomy_output --sensitive
+
+#filter goob bins based on both the results from checkm2 and gunc
