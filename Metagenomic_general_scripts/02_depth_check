@@ -1,0 +1,12 @@
+#!/bin/bash -l
+
+
+source /path/to/your/directory/miniforge/bin/activate
+conda activate /path/to/your/directory/conda_Nonpareil_env 
+
+for file in *_R1_val_1.fq.gz; do
+  name="${file%%_R1_val_1.fq.gz}"
+  nonpareil  -s $file -f fastq -t 24 -R 400000 -L 15 -T kmer -k 15 -b "${name}_forward"
+done
+
+#choose one of R1/R2 files is enough
