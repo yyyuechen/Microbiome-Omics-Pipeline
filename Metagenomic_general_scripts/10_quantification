@@ -1,0 +1,19 @@
+#!/bin/bash
+
+module load drep
+module load coverm
+
+fastq_dir="/path/to/your/directory/"
+
+coverm genome -m tpm \
+ --coupled  "$fastq_dir"raw_after_qc_R1.fastq "$fastq_dir"raw_after_qc_R2.fastq\
+ --genome-fasta-files  /path/to/your/directory/*.fasta -o MAG_tpm.tsv \
+ --min-read-percent-identity 90 --min-read-aligned-percent 50 --threads 34 -x fasta --min-covered-fraction 0
+
+# Good to keep in mind:
+# If raw_after_qc_R1/2.fastq files are from metagenomic sequencing,
+# we are estimating the abundance of each MAG in each sample.
+# If raw_after_qc_R1/2.fastq files are from metatranscriptomic sequencing,
+# we are estimating the transcriptional activity of each MAG in each sample.
+# It is normal that not all MAGs detected in DNA are also detected in RNA.
+# In such cases, we need to look for meaningful biological explanations (dormant, lowly expressed, rare, or below detection).
