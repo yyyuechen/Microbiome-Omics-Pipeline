@@ -1,0 +1,5 @@
+#!/bin/bash
+
+cd-hit-est -o trinity_cdhit.fasta -i trinity.fasta -p 1 -d 0 -T 5 -M 10000 
+
+#remove redundancy
