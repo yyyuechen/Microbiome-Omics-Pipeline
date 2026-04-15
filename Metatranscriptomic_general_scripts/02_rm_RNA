@@ -1,0 +1,15 @@
+#!/bin/bash -l
+
+for file in *_R1.fastq.gz; do
+  sample=${file#fastp_}
+  sample=${sample%_R1.fastq.gz}
+  mate=${file%_R1.fastq.gz}_R2.fastq.gz
+
+  ribodetector_cpu \
+    -t 20 \
+    -l 100 \
+    -i "$file" "$mate" \
+    -e rrna \
+    --chunk_size 256 \
+    -o "${sample}.norRNA.R1.fastq" "${sample}.norRNA.R2.fastq"
+done
