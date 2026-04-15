@@ -10,43 +10,43 @@ This repository contains scripts and workflows used for the analysis of metageno
 
 All scripts saved in Metagenomic_general_scripts
 
-### 1)Quality control
+### 1) Quality control
 
 Read trimming and filtering
 
-### 2)Estimate average coverage for metagenomic datasets
+### 2) Estimate average coverage for metagenomic datasets
 
 Evaluate whether sequencing depth is sufficient to capture most community sequence diversity.
 
-### 3)Quick taxonomic assignment
+### 3) Quick taxonomic assignment
 
 Taxonomic assignment based on conserved marker genes (e.g., rplB)
 
-### 4)Metagenome co-assembly
+### 4) Metagenome co-assembly
 
 Co-assembly of high-quality reads into contigs
 
-### 5)Fast multi-sample coverage estimation for MAG binning
+### 5) Fast multi-sample coverage estimation for MAG binning
 
 Computes multi-sample contig coverage for metagenome-assembled genome (MAG) binning, **use after metagenomic assembly and before binning**
 
-### 6)Genome binning
+### 6) Genome binning
 
 Reconstruction of MAGs
 
-### 7)MAG refinement and quality assessment
+### 7) MAG refinement and quality assessment
 
 Completeness and contamination estimation
 
-### 8)Taxonomic annotation
+### 8) Taxonomic annotation
 
 Classification of MAGs
 
-### 9)Functional annotation
+### 9) Functional annotation
 
 Gene prediction and pathway analysis
 
-### 10)Quantification and visualization
+### 10) Quantification and visualization
 
 Coverage, abundance, and gene expression analyses
 
@@ -54,19 +54,19 @@ Coverage, abundance, and gene expression analyses
 
 All scripts saved in Metatranscriptomic_general_scripts
 
-### 1)Quality control
+### 1) Quality control
 
 Read trimming and filtering
 
-### 2)Remove rRNA
+### 2) Remove rRNA
 
 Remove ribosomal RNA (rRNA) reads from metatranscriptomic datasets to retain only protein-coding transcripts for functional and expression analysis.
 
-### 3)Quick taxonomic assignment
+### 3) Quick taxonomic assignment
 
 Taxonomic assignment based on conserved marker genes (e.g., rplB)
 
-### 4)Metatranscriptomic co-assembly
+### 4) Metatranscriptomic co-assembly
 
 Co-assembly of high-quality reads into contigs
 
