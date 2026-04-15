@@ -74,7 +74,7 @@ Co-assembly of high-quality reads into contigs
 
 Extract and cluster assembled transcripts or predicted coding sequences to generate a non-redundant gene set for downstream taxonomic, functional, and expression analyses.
 
-### 6)Check sequencing depth
+### 6) Check sequencing depth
 
 Evaluate whether sequencing depth is sufficient to capture the biodiversity signal of the transcriptionally active community.
 
