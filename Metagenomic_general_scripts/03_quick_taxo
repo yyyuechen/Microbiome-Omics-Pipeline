@@ -4,5 +4,5 @@ conda activate /path/to/your/directory/conda_singlem_0.18.3_env
 R1_files=$(ls *_R1_val_1.fq.gz)
 R2_files=$(ls *_R2_val_2.fq.gz)
 # Run singlem command
-singlem pipe --forward $R1_files --reverse $R2_files --threads 16 --otu-table "afifi_metarna_singlem.csv"
+singlem pipe --forward $R1_files --reverse $R2_files --threads 16 --otu-table "singlem.csv"
 
