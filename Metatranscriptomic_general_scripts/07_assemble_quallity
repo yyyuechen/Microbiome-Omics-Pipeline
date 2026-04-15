@@ -1,0 +1,11 @@
+#!/bin/bash
+
+n=$(find . -maxdepth 1 -name "*.norRNA.R1.fastq" | sort | paste -sd "," -)
+m=$(find . -maxdepth 1 -name "*.norRNA.R2.fastq" | sort | paste -sd "," -)
+
+transrate \
+  --assembly /path/to/your/directory/trinity_cdhit.fasta \
+  --left "$n" \
+  --right "$m" \
+  --threads 32 \
+  --output transrate_trinity_cdhit
