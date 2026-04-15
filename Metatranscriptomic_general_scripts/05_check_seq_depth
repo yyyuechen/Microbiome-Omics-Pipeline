@@ -1,0 +1,201 @@
+#!/bin/bash
+
+
+#Salmon/Bowtie2 + BAM
+#Picard downsampling
+#featureCounts with SAF
+
+#its just to give an idea on how to check sequence depth of metatranscriptomes
+#see similar examples in https://academic.oup.com/ismecommun/article/5/1/ycaf090/8152718?login=false#523672229
+#but in my case I use reference from assembly from metatranscriptome
+
+
+
+#The result is to answer: 
+#1)get bam files
+
+#!/bin/bash
+set -euo pipefail
+
+THREADS=24
+TRINITY="trinity_cdhit.fasta"
+INDEX="salmon_trinity_index"
+
+mkdir -p logs
+mkdir -p salmon_bam
+mkdir -p salmon_quant
+
+# build index once
+salmon index -t "$TRINITY" -i "$INDEX"
+
+# get SAF file
+bioawk -c fastx '
+BEGIN{OFS="\t"; print "GeneID","Chr","Start","End","Strand"}
+{
+    print $name, $name, 1, length($seq), "+"
+}' trinity_cdhit.fasta > trinity_transcripts.saf
+
+# get trinity_tx2gene.tsv
+grep '^>' trinity_cdhit.fasta | sed 's/^>//' | awk '{
+  tx=$1
+  gene=tx
+  sub(/_i[0-9]+$/, "", gene)
+  print tx "\t" gene
+}' > trinity_tx2gene.tsv
+
+for r1 in *.norRNA.R1.fastq; do
+    [ -e "$r1" ] || { echo "No R1 files found"; exit 1; }
+
+    sample="${r1%.norRNA.R1.fastq}"
+    r2="${sample}.norRNA.R2.fastq"
+
+    if [ ! -f "$r2" ]; then
+        echo "Missing mate for $r1 -> expected $r2"
+        continue
+    fi
+
+    echo "Processing $sample"
+
+    salmon quant \
+        -i "$INDEX" \
+        -l A \
+        -1 "$r1" \
+        -2 "$r2" \
+        --validateMappings \
+        -p "$THREADS" \
+        --writeMappings \
+        -o "salmon_quant/${sample}" \
+        2> "logs/${sample}.salmon.log" \
+    | samtools sort -@ "$THREADS" -o "salmon_bam/${sample}.bam"
+
+    samtools index "salmon_bam/${sample}.bam"
+done
+
+#2)fit bam files for each metatransctipt sample into picard to make 10%–100% downsampled BAMs ready for featureCounts.
+#!/bin/bash
+set -euo pipefail
+
+THREADS=24
+PICARD_CMD="picard"   # or: java -jar /path/to/picard.jar
+FRACTIONS=(0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0)
+
+mkdir -p picard_downsample
+mkdir -p logs
+
+for bam in salmon_bam/*.bam; do
+    [ -e "$bam" ] || { echo "ERROR: no BAM files found in salmon_bam"; exit 1; }
+
+    sample=$(basename "$bam" .bam)
+
+    for frac in "${FRACTIONS[@]}"; do
+        echo "Downsampling $sample to $frac"
+
+        if [ "$frac" = "1.0" ]; then
+            continue
+        fi
+
+        ${PICARD_CMD} DownsampleSam \
+            I="$bam" \
+            O="picard_downsample/${sample}.${frac}.bam" \
+            PROBABILITY="$frac" \
+            RANDOM_SEED=1 \
+            STRATEGY=HighAccuracy \
+            > "logs/${sample}.${frac}.picard.log" 2>&1
+
+        samtools index "picard_downsample/${sample}.${frac}.bam"
+    done
+done
+
+#3)use feature count to??
+
+mkdir -p featurecounts
+mkdir -p logs
+
+echo -e "sample\tfraction\tdetected_transcripts\tdetected_genes\tassigned_fragments" \
+> featurecounts/saturation_summary.tsv
+
+for full_bam in salmon_bam/*.bam; do
+    [ -e "$full_bam" ] || { echo "ERROR: no BAM files found in salmon_bam"; exit 1; }
+
+    sample=$(basename "$full_bam" .bam)
+
+    for frac in "${FRACTIONS[@]}"; do
+        if [ "$frac" = "1.0" ]; then
+            bam="$full_bam"
+            label="1.0"
+        else
+            bam="picard_downsample/${sample}.${frac}.bam"
+            label="$frac"
+
+            if [ ! -f "$bam" ]; then
+                echo "WARNING: missing downsampled BAM $bam ; skipping"
+                continue
+            fi
+        fi
+
+        echo "featureCounts: $sample fraction $label"
+
+        count_out="featurecounts/${sample}.${label}.featureCounts.txt"
+
+        featureCounts \
+            -T "$THREADS" \
+            -F SAF \
+            -a ref_files/trinity_transcripts.saf \
+            -o "$count_out" \
+            -p --countReadPairs \
+            -s "$STRAND" \
+            -Q "$MIN_MAPQ" \
+            "$bam" \
+            > "logs/${sample}.${label}.featureCounts.log" 2>&1
+
+        # count detected transcripts
+        detected_tx=$(awk -v thr="$DETECTION_THRESHOLD" '
+            BEGIN{FS="\t"; n=0}
+            $1 ~ /^#/ {next}
+            $1 == "Geneid" {next}
+            $7 >= thr {n++}
+            END{print n+0}
+        ' "$count_out")
+
+        # collapse transcript counts to Trinity gene counts
+        detected_gene=$(awk -v thr="$DETECTION_THRESHOLD" '
+            BEGIN{FS=OFS="\t"}
+            FNR==NR {
+                if (NR>1) tx2gene[$1]=$2
+                next
+            }
+            $1 ~ /^#/ {next}
+            $1 == "Geneid" {next}
+            {
+                tx=$1
+                c=$7
+                g=tx2gene[tx]
+                if (g != "") gene_sum[g] += c
+            }
+            END{
+                n=0
+                for (g in gene_sum) {
+                    if (gene_sum[g] >= thr) n++
+                }
+                print n+0
+            }
+        ' ref_files/trinity_tx2gene.tsv "$count_out")
+
+        # assigned fragments from featureCounts summary
+        assigned=$(awk '
+            BEGIN{FS="\t"; a=0}
+            $1=="Assigned" {a=$2}
+            END{print a+0}
+        ' "${count_out}.summary")
+
+        echo -e "${sample}\t${label}\t${detected_tx}\t${detected_gene}\t${assigned}" \
+        >> featurecounts/saturation_summary.tsv
+    done
+done
+
+#4）plot with R using saturation_summary.tsv
+#to answer:
+
+#If I use only 10%, 20%, 30% ... up to 100% of my mapped reads, 
+#how many transcripts and genes can I still detect? Have I sequenced deeply enough, 
+#or would more reads still recover many more features?
