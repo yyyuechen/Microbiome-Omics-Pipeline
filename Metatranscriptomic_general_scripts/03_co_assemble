@@ -1,0 +1,20 @@
+#!/bin/bash
+
+##https://github.com/trinityrnaseq/trinityrnaseq/wiki/Running-Trinity#grid_conf
+ # just run the initial in silico normalization step and kmer counting:
+ # Trinity (opts) --no_run_inchworm
+
+ # run through inchworm, stop before chrysalis
+ # Trinity (opts) --no_run_chrysalis
+
+ # run through chrysalis, stop before Trinity phase 2 parallel assembly of clustered reads
+ # Trinity (opts) --no_distributed_trinity_exec
+
+ # finish the job, running all Phase 2 mini-assemblies in parallel:
+ # Trinity (opts) 
+
+#phase1
+Trinity --seqType fq --samples_file sample_cond.txt --CPU 34 --max_memory 1500G --min_contig_length 250 --no_salmon --no_distributed_trinity_exec --output ./trinity_out_dir
+
+#phase2
+Trinity --seqType fq --samples_file sample_cond.txt --CPU 40 --max_memory 1500G --min_contig_length 250 --no_salmon --output ./trinity_out_dir
