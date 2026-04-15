@@ -62,21 +62,21 @@ Read trimming and filtering
 
 Remove ribosomal RNA (rRNA) reads from metatranscriptomic datasets to retain only protein-coding transcripts for functional and expression analysis.
 
-### 3)Estimate average coverage for metatranscriptomic datasets
-
-Evaluate whether sequencing depth is sufficient to capture the biodiversity signal of the transcriptionally active community.
-
-### 4)Quick taxonomic assignment
+### 3)Quick taxonomic assignment
 
 Taxonomic assignment based on conserved marker genes (e.g., rplB)
 
-### 5)Metatranscriptomic co-assembly
+### 4)Metatranscriptomic co-assembly
 
 Co-assembly of high-quality reads into contigs
 
-### 6) Identify non-redundant genes
+### 5) Identify non-redundant genes
 
 Extract and cluster assembled transcripts or predicted coding sequences to generate a non-redundant gene set for downstream taxonomic, functional, and expression analyses.
+
+### 6)Check sequencing depth
+
+Evaluate whether sequencing depth is sufficient to capture the biodiversity signal of the transcriptionally active community.
 
 ### 7) Assess assembly quality
 
