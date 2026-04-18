@@ -82,15 +82,7 @@ Evaluate whether sequencing depth is sufficient to capture the biodiversity sign
 
 Evaluate metatranscriptome assembly quality using metrics such as contig length distribution, N50, read mapping rate, and transcript completeness to determine overall assembly reliability.
 
-### 8) Assess assembly representation and redundance
-
-Assess assembly completeness and redundancy by remapping reads to the assembly and examining mapping recovery, multi-mapping patterns, and redundancy among highly similar transcripts.
-
-### 9) Taxonomic annotation
-
-Assign taxonomic identities to assembled transcripts or predicted genes to characterize the composition of the transcriptionally active microbial community.
-
-### 10) Functional annotation
+### 8) Functional annotation
 
 Annotate predicted genes against functional databases to identify metabolic pathways, gene families, and biological functions represented in the metatranscriptome.
 
