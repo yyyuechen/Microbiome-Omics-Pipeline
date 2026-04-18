@@ -22,4 +22,4 @@ Trinotate --db /path/to/your/directory/myTrinotate.sqlite --report > myTrinotate
 extract_GO_assignments_from_Trinotate_xls.pl --Trinotate_xls myTrinotate.tsv -T --include_ancestral_terms > trinotate_GO_annotation.txt
 
 # KO annotation:
-see 09_bin_func(https://github.com/yyyuechen/Microbiome-Omics-Pipeline/blob/main/Metagenomic_general_scripts/09_bin_func) from Metagenomic_general_scripts
+see [09_bin_func](https://github.com/yyyuechen/Microbiome-Omics-Pipeline/blob/main/Metagenomic_general_scripts/09_bin_func) from Metagenomic_general_scripts
