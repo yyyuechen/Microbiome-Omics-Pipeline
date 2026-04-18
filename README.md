@@ -86,6 +86,10 @@ Evaluate metatranscriptome assembly quality using metrics such as contig length 
 
 Annotate predicted genes against functional databases to identify metabolic pathways, gene families, and biological functions represented in the metatranscriptome.
 
-### 11) Gene quantification
+### 9) Gene quantification
 
 Quantify transcript or gene abundance by mapping reads back to the non-redundant gene catalog or assembled transcripts to estimate expression levels across samples.
+
+### 10) Differential gene expression analysis
+
+Identify genes with significant changes in expression levels between different biological conditions.
