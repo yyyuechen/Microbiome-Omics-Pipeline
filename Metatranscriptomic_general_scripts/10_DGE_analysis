@@ -1,0 +1,215 @@
+#Here I did DGE analysis in R
+
+#Here I used Wilcoxon rank-sum test as suggested by: 
+#Li, Y., Ge, X., Peng, F. et al. Exaggerated false positives by popular differential expression methods when analyzing human population samples. Genome Biol 23, 79 (2022). https://doi.org/10.1186/s13059-022-02648-4
+
+#**Wilcoxon rank-sum test**
+# read data
+setwd("~/path/to/your/directory")
+readCount <- read.table("RSEM.isoform.counts.matrix",header = T, row.names = 1, stringsAsFactors = F,check.names = F)
+conditions <- read.csv("~sample_condition.csv",header = T, row.names = 1, stringsAsFactors = F,check.names = F)
+
+# edger TMM normalize
+y <- DGEList(counts=readCount, genes = row.names(readCount),group=as.factor(conditions$Niskin_bottle))
+keep <- rowSums(cpm(y)>1) >= 6 
+y <- y[keep,keep.lib.sizes=FALSE]
+
+##Remove rows conssitently have zero or very low counts
+keep <- filterByExpr(y)
+y <- y[keep,keep.lib.sizes=FALSE]
+
+##Perform TMM normalization and transfer to CPM (Counts Per Million)
+y <- calcNormFactors(y,method="TMM")
+count_norm=cpm(y)
+count_norm<-as.data.frame(count_norm)
+
+# Run the Wilcoxon rank-sum test for each gene
+
+pvalues <- sapply(1:nrow(count_norm),function(i){
+  data<-cbind.data.frame(gene=as.numeric(t(count_norm[i,])),conditions)
+  p=wilcox.test(gene~conditions$Niskin_bottle, data)$p.value
+  return(p)
+})
+fdr=p.adjust(pvalues,method = "fdr")
+
+# Calculate fold-change for each gene
+conditionsLevel<-levels(conditions$Niskin_bottle)
+conditionsLevel <- unique(conditions$Niskin_bottle)
+dataCon1=count_norm[,c(which(conditions$Niskin_bottle==conditionsLevel[1]))]
+dataCon2=count_norm[,c(which(conditions$Niskin_bottle==conditionsLevel[2]))]
+foldChanges=log2(rowMeans(dataCon2)/rowMeans(dataCon1))
+
+# Output results based on FDR threshold
+outRst<-data.frame(log2foldChange=foldChanges, pValues=pvalues, FDR=fdr)
+rownames(outRst)=rownames(count_norm)
+outRst=na.omit(outRst)
+fdrThres=0.1
+outRst_FDR0.1_afifirna <- outRst[outRst$FDR<fdrThres,]
+write.table(outRst[outRst$FDR<fdrThres,], file="WilcoxonTest.rst.tsv",sep="\t", quote=F,row.names = T,col.names = T)
+
+
+##assign GO annotation to each DEG
+all_GO_annotation <- read.table("GO_annotation.txt",header = T, row.names = 1, stringsAsFactors = F,check.names = F)
+# Here, one_go.txt was generated from the output of 08_func_anno.sh.
+# After GO annotation with Trinotate, the resulting file, trinotate_GO_annotation.txt,
+# was further processed so that each gene was assigned to a single GO annotation.
+
+go_class <- read.delim("go_term.list", header=FALSE, stringsAsFactors =FALSE) 
+names(go_class) <- c('ID','Description','Ontology')  
+
+go_anno <- read.delim("one_go.txt", header=FALSE, stringsAsFactors =FALSE)
+# Here, one_go.txt was generated from the output of 08_func_anno.sh.
+# After GO annotation with Trinotate, the resulting file, trinotate_GO_annotation.txt,
+# was further processed so that each gene was assigned to a single GO annotation.
+
+names(go_anno) <- c('gene_id','ID')
+go_anno <-merge(go_anno, go_class, by = 'ID', all.x = TRUE)
+
+go_anno_backup = go_anno
+gene_list <- read.delim("~/Desktop/YUE_KAUST/phD_thesis/afifi/RNA_analysis/quantification/WilcoxonTest.rst.tsv",header=TRUE) 
+#build upreg_in_low and lowreg_in_low gene dataset
+
+upreg_in_low <- subset(gene_list, log2foldChange > 0 & abs(log2foldChange) > 1)
+lowreg_in_low <- subset(gene_list, log2foldChange < 0 & abs(log2foldChange) > 1)
+
+
+## do this in upreg_in_low
+
+names(upreg_in_low) <- c('gene_id') 
+gene_select <- upreg_in_low$gene_id 
+
+# enrichment analysis
+
+
+go_rich_up_inlow <- enricher(gene = gene_select,
+                    TERM2GENE = go_anno[c('ID','gene_id')],
+                    TERM2NAME = go_anno[c('ID','Description')],
+                    pvalueCutoff = 0.05,
+                    pAdjustMethod = 'BH',
+                    qvalueCutoff = 0.05,
+                    maxGSSize = 200) 
+
+
+plot_data <- data.frame(
+  ID = go_rich_up_inlow$ID,
+  Description = go_rich_up_inlow$Description,
+  GeneRatio = go_rich_up_inlow$GeneRatio,
+  BgRatio = go_rich_up_inlow$BgRatio,
+  Count = go_rich_up_inlow$Count,
+  qvalue = go_rich_up_inlow$p.adjust,
+  Ontology = go_rich_up_inlow$ID,
+  GeneID = go_rich_up_inlow$geneID,
+  stringsAsFactors = FALSE  # Ensures columns are not factors
+)
+
+# Confirm that columns are character, not factor (if necessary)
+plot_data$ID <- as.character(plot_data$ID)
+plot_data$Description <- as.character(plot_data$Description)
+plot_data$Ontology <- as.character(plot_data$Ontology)
+plot_data$GeneID <- as.character(plot_data$GeneID)
+# Ensure columns are character, not factor
+plot_data$ID <- as.character(plot_data$ID)
+go_class$ID <- as.character(go_class$ID)
+go_class$Ontology <- as.character(go_class$Ontology)
+
+
+
+plot_data = data.frame(plot_data)
+for(i in 1:nrow(plot_data)){
+  if(is.na(plot_data$Description[i])){
+    plot_data$Ontology[i] = 'NA'
+  } else {
+    # Get all matching Ontology values in go_class for the current ID
+    matching_ontology <- go_class$Ontology[go_class$ID == plot_data$ID[i]]
+    
+    if(length(matching_ontology) > 0){
+      # If there are multiple matches, collapse them into a single string
+      plot_data$Ontology[i] <- paste(matching_ontology, collapse = "; ")
+    } else {
+      # If there is no match, set to NA or another placeholder
+      plot_data$Ontology[i] <- 'NA'
+    }
+  }
+}
+
+
+plot_data_noNA_up = plot_data[complete.cases(plot_data$Description),]
+plot_data_noNA_up = transform(plot_data_noNA_up, Count = as.numeric(Count),
+                           qvalue = as.numeric(qvalue))
+# Ensure that Count is numeric
+plot_data_noNA_up$Count <- as.numeric(as.character(plot_data_noNA_up$Count))
+
+# Now order the data frame
+plot_data_noNA_up <- plot_data_noNA_up[order(plot_data_noNA_up$qvalue, -plot_data_noNA_up$Count),]
+
+plot_data_noNA_up$Ontology[plot_data_noNA_up$Ontology == "cellular_component"] = "Cellular Component"
+plot_data_noNA_up$Ontology[plot_data_noNA_up$Ontology == "biological_process"] = "Biological Process"
+plot_data_noNA_up$Ontology[plot_data_noNA_up$Ontology == "molecular_function"] = "Molecular Function"
+
+Top10 = c()
+CC = 0
+BP = 0
+MF = 0
+for(i in 1:length(plot_data_noNA_up$Ontology)){
+  if(plot_data_noNA_up$Ontology[i] == "Cellular Component"){
+    CC = CC + 1
+    if(CC <= 10){
+      Top10 = append(Top10, i)
+    }
+  }
+  if(plot_data_noNA_up$Ontology[i] == "Biological Process"){
+    BP = BP + 1
+    if(BP <= 10){
+      Top10 = append(Top10, i)
+    }
+  }
+  if(plot_data_noNA_up$Ontology[i] == "Molecular Function"){
+    MF = MF + 1
+    if(MF <= 10){
+      Top10 = append(Top10, i)
+    }
+  }
+}
+
+# Define the parse_ratio function
+parse_ratio <- function(ratio) {
+  sapply(strsplit(as.character(ratio), "/"), function(x) as.numeric(x[1]) / as.numeric(x[2]))
+}
+
+# Ensure qvalue is numeric
+plot_data_noNA_up$qvalue <- as.numeric(as.character(plot_data_noNA_up$qvalue))
+
+#min = 4
+#max = 16
+# 4 is length
+#step = ceiling((max-min)/4)
+
+# Plot the top 10 of each ontology
+enrichment_plot <- ggplot(plot_data_noNA_up[Top10,], 
+                          aes(x = parse_ratio(GeneRatio), y = reorder(str_wrap(Description, width = 20), Count))) +  # Wrap y-axis labels
+  geom_point(aes(size = Count, color = qvalue)) +
+  scale_color_gradient(low = "coral2", high = "yellowgreen") +
+  scale_x_continuous(labels = scientific) +  # Scientific notation for x-axis
+  theme_bw() +
+  ylab(NULL) +
+  xlab("GeneRatio") +
+  facet_wrap(~Ontology, scales = "free", ncol = 3, strip.position = "right") +  # Keep facets in one column
+  theme(text = element_text(size = 20, face = "bold"),  # Bold all text
+        axis.text = element_text(face = "bold"),        # Bold axis text
+        strip.text = element_text(face = "bold"),       # Bold facet strip text
+        legend.text = element_text(face = "bold"),      # Bold legend text
+        legend.title = element_text(face = "bold"))
+
+# Display the plot
+enrichment_plot
+
+enrichment_plot_top10 = ggplot(plot_data_noNA_up[1:20,],aes(x = parse_ratio(GeneRatio),y = reorder(Description, Count))) + geom_point(aes(size=Count,color=qvalue,)) +
+  scale_color_gradient(low = "yellowgreen", high = "coral2") + theme_bw() + ylab(NULL) + xlab("GeneRatio") + 
+  theme(text = element_text(size = 20, face = "bold"),  # Bold all text
+        axis.text = element_text(face = "bold"),        # Bold axis text
+        strip.text = element_text(face = "bold"),       # Bold facet strip text
+        legend.text = element_text(face = "bold"),      # Bold legend text
+        legend.title = element_text(face = "bold"))
+
+write.table(plot_data_noNA_up, file="GO_upreg_lowBSI.txt",sep="\t", quote=F,row.names = T,col.names = T)
+#do the same for down-regulated genes
