@@ -90,6 +90,6 @@ Annotate predicted genes against functional databases to identify metabolic path
 
 Quantify transcript or gene abundance by mapping reads back to the non-redundant gene catalog or assembled transcripts to estimate expression levels across samples.
 
-### 10) Differential espressing genes (DEG) analysis
+### 10) Differential gene expression (DGE) analysis
 
 Identify genes with significant changes in expression levels between different biological conditions.
