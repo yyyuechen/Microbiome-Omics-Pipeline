@@ -22,4 +22,5 @@ Trinotate --db /path/to/your/directory/myTrinotate.sqlite --report > myTrinotate
 extract_GO_assignments_from_Trinotate_xls.pl --Trinotate_xls myTrinotate.tsv -T --include_ancestral_terms > trinotate_GO_annotation.txt
 
 # KO annotation
-See [`09_bin_func`](https://github.com/yyyuechen/Microbiome-Omics-Pipeline/blob/main/Metagenomic_general_scripts/09_bin_func) in `Metagenomic_general_scripts`.
+prokka --outdir trinity_cdhit_prokka --prefix trinity_cdhit trinity_cdhit.fasta
+python3 $EGGNOG_MAPPER/emapper.py -i trinity_cdhit.faa -o trinity_cdhit_eggnog --cpu 34 -m diamond
