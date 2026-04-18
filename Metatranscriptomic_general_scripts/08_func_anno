@@ -1,0 +1,25 @@
+#!/bin/bash
+
+
+# GO annotation:
+
+#initiation
+Trinotate --db /path/to/your/directory/myTrinotate.sqlite --init \
+           --gene_trans_map trinity.gene_trans_map \
+           --transcript_fasta trinity.fasta \
+           --transdecoder_pep trinity_cdhit.pep
+
+#Running Sequence Analyses
+Trinotate --db /path/to/your/directory/myTrinotate.sqlite --CPU 34 \
+               --transcript_fasta trinity_cdhit.fasta \
+               --transdecoder_pep trinity_cdhit.pep \
+               --trinotate_data_dir /path/to/your/directory/trinotate_db \
+               --run ALL \
+               --use_diamond 
+
+#Generating the Trinotate Report
+Trinotate --db /path/to/your/directory/myTrinotate.sqlite --report > myTrinotate.tsv
+extract_GO_assignments_from_Trinotate_xls.pl --Trinotate_xls myTrinotate.tsv -T --include_ancestral_terms > trinotate_GO_annotation.txt
+
+# KO annotation:
+see 09_bin_func(https://github.com/yyyuechen/Microbiome-Omics-Pipeline/blob/main/Metagenomic_general_scripts/09_bin_func) from Metagenomic_general_scripts
