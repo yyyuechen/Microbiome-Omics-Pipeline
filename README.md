@@ -1,7 +1,7 @@
 # Microbiome-Omics-Pipeline
 
-[![Workflow](https://img.shields.io/badge/Analysis-Metagenomic%20%7C%20ML%20%7C%20PPI-green)](#)
-[![Workflow](https://img.shields.io/badge/Analysis-Metatranscriptomic%20%7C%20ML%20%7C%20PPI-green)](#)
+[![Workflow](https://img.shields.io/badge/Analysis-Metagenomic-green)](#)
+[![Workflow](https://img.shields.io/badge/Analysis-Metatranscriptomic-blue)](#)
 [![Status](https://img.shields.io/badge/Project-Reproduction-orange)](#)
 
 ![GitHub last commit](https://img.shields.io/github/last-commit/yyyuechen/Microbiome-Omics-Pipeline)
