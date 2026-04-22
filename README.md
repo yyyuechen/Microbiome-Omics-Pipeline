@@ -88,8 +88,8 @@ Located in: Metatranscriptomic_general_scripts/
 
 ## Getting Started
 Clone the repository
-git clone https://github.com/yyyuechen/Microbiome-Omics-Pipeline.git
-cd Microbiome-Omics-Pipeline
+- git clone https://github.com/yyyuechen/Microbiome-Omics-Pipeline.git
+- cd Microbiome-Omics-Pipeline
 
 ## General usage
 
