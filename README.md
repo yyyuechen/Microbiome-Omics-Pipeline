@@ -80,34 +80,25 @@ Located in: Metatranscriptomic_general_scripts/
 - 03_rm_RNA – remove rRNA reads from metatranscriptomic datasets
 - 04_co_assemble – co-assemble high-quality reads or transcripts
 - 05_uniq_gene – construct a non-redundant gene set / gene catalog
-06_check_seq_depth – assess whether sequencing depth is sufficient
-07_assemble_quallity – evaluate assembly quality and reliability
-08_func_anno – perform functional annotation of predicted genes
-09_gene_quan – quantify transcript / gene abundance
-10_DGE_analysis – identify differentially expressed genes across conditions
-Getting Started
+- 06_check_seq_depth – assess whether sequencing depth is sufficient
+- 07_assemble_quallity – evaluate assembly quality and reliability
+- 08_func_anno – perform functional annotation of predicted genes
+- 09_gene_quan – quantify transcript / gene abundance
+- 10_DGE_analysis – identify differentially expressed genes across conditions
+
+## Getting Started
 Clone the repository
 git clone https://github.com/yyyuechen/Microbiome-Omics-Pipeline.git
 cd Microbiome-Omics-Pipeline
-General usage
+
+## General usage
 
 Each workflow step is stored in its own folder. Before running a script:
 
-Open the corresponding script and modify input/output paths.
-Adjust database locations and software parameters for your environment.
-Run the workflow step-by-step in the intended order.
-Check intermediate outputs before moving to downstream analyses.
-
-Example:
-
-cd Metagenomic_general_scripts/01_QC_check
-bash your_script.sh
-
-or
-
-cd Metatranscriptomic_general_scripts/03_rm_RNA
-bash your_script.sh
-Dependencies
+- Open the corresponding script and modify input/output paths.
+- Adjust database locations and software parameters for your environment.
+- Run the workflow step-by-step in the intended order.
+- Check intermediate outputs before moving to downstream analyses.
 
 This repository contains shell-based workflows that rely on external bioinformatics software.
 Please revise this section to match the exact tools used in your scripts.
@@ -115,42 +106,49 @@ Please revise this section to match the exact tools used in your scripts.
 Typical dependencies may include:
 
 Core environment
-Linux / Unix
-Bash
-GNU core utilities (awk, sed, grep, sort, xargs)
+- Linux / Unix
+- Bash
+- GNU core utilities (awk, sed, grep, sort, xargs)
+
 Read preprocessing and QC
-fastp
-FastQC
-MultiQC
+- fastp
+- FastQC
+- MultiQC
+
 Read mapping and BAM processing
-Bowtie2
-SAMtools
-Picard
+- Bowtie2
+- SAMtools
+- Picard
+
 Assembly and clustering
-MEGAHIT or metaSPAdes
-Trinity
-CD-HIT
+- MEGAHIT or metaSPAdes
+- Trinity
+- CD-HIT
+
 Genome binning and quality assessment
-MetaBAT2, MaxBin2, or related binning tools
-CheckM
+- MetaBAT2, MaxBin2, or related binning tools
+- CheckM
+
 Taxonomic and functional annotation
-GTDB-Tk
-Prokka
-eggNOG-mapper
-KEGG / custom annotation resources
+- GTDB-Tk
+- Prokka
+- eggNOG-mapper
+- KEGG / custom annotation resources
+
 Quantification and downstream statistics
-Salmon, featureCounts, or related quantification tools
+- Salmon, featureCounts, or related quantification tools
 R with relevant packages for downstream analysis and visualization
-Output Scope
+
+## Output Scope
 
 Depending on the workflow branch and analysis stage, this repository can be used to generate:
 
-quality-controlled sequencing reads
-metagenomic or metatranscriptomic co-assemblies
-metagenome-assembled genomes (MAGs)
-taxonomic annotations
-functional annotations and pathway profiles
-abundance or coverage tables
-non-redundant gene catalogs
-transcript / gene quantification matrices
-differential expression results
+- quality-controlled sequencing reads
+- metagenomic or metatranscriptomic co-assemblies
+- metagenome-assembled genomes (MAGs)
+- taxonomic annotations
+- functional annotations and pathway profiles
+- abundance or coverage tables
+- non-redundant gene catalogs
+- transcript / gene quantification matrices
+- differential expression results
