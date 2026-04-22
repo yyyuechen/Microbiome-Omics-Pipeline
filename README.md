@@ -1,95 +1,55 @@
-# Microbiome Omics Pipeline
-A collection of bioinformatics scripts and pipelines used for the analysis of metagenomic and metatranscriptomic datasets from samples in the Red Sea, supporting genome reconstruction (MAGs) and functional characterization of microbial communities.
+# Microbiome-Omics-Pipeline
 
-# Project overview
-This repository contains scripts and workflows used for the analysis of metagenomic and metatranscriptomic datasets from samples in the Red Sea. The pipeline supports genome-resolved analyses, including metagenome assembly, binning, taxonomic classification, and functional profiling.
+[![Workflow](https://img.shields.io/badge/Analysis-Metagenomic%20%7C%20ML%20%7C%20PPI-green)](#)
+[![Workflow](https://img.shields.io/badge/Analysis-Metatranscriptomic%20%7C%20ML%20%7C%20PPI-green)](#)
+[![Status](https://img.shields.io/badge/Project-Reproduction-orange)](#)
 
-# Workflow overview
+![GitHub last commit](https://img.shields.io/github/last-commit/yyyuechen/Microbiome-Omics-Pipeline)
+![GitHub repo size](https://img.shields.io/github/repo-size/yyyuechen/Microbiome-Omics-Pipeline)
+![GitHub top language](https://img.shields.io/github/languages/top/yyyuechen/Microbiome-Omics-Pipeline)
+![GitHub stars](https://img.shields.io/github/stars/yyyuechen/Microbiome-Omics-Pipeline?style=social)
 
-## Metagenomes
+Bioinformatics workflows for metagenomic and metatranscriptomic analyses of microbial communities, with a focus on genome-resolved reconstruction, functional annotation, and transcriptomic profiling.
 
-All scripts saved in Metagenomic_general_scripts
+---
 
-### 1) Quality control
+## Overview
 
-Read trimming and filtering
+This repository contains modular shell-based workflows for processing and analyzing microbiome omics datasets. It is organized into two main parts:
 
-### 2) Estimate average coverage for metagenomic datasets
+- **Metagenomic workflows** for quality control, co-assembly, MAG reconstruction, taxonomic annotation, functional annotation, and abundance quantification.
+- **Metatranscriptomic workflows** for quality control, rRNA removal, co-assembly, non-redundant gene catalog construction, functional annotation, gene quantification, and differential expression analysis.
 
-Evaluate whether sequencing depth is sufficient to capture most community sequence diversity.
+These scripts are designed as practical workflow templates and can be adapted to different datasets, computing environments, and project goals.
 
-### 3) Quick taxonomic assignment
+---
 
-Taxonomic assignment based on conserved marker genes (e.g., rplB)
+## Repository Structure
 
-### 4) Metagenome co-assembly
-
-Co-assembly of high-quality reads into contigs
-
-### 5) Fast multi-sample coverage estimation for MAG binning
-
-Computes multi-sample contig coverage for metagenome-assembled genome (MAG) binning, **use after metagenomic assembly and before binning**
-
-### 6) Genome binning
-
-Reconstruction of MAGs
-
-### 7) MAG refinement and quality assessment
-
-Completeness and contamination estimation
-
-### 8) Taxonomic annotation
-
-Classification of MAGs
-
-### 9) Functional annotation
-
-Gene prediction and pathway analysis
-
-### 10) Quantification and visualization
-
-Coverage, abundance, and gene expression analyses
-
-## Metatranscriptomes
-
-All scripts saved in Metatranscriptomic_general_scripts
-
-### 1) Quality control
-
-Read trimming and filtering
-
-### 2) Remove rRNA
-
-Remove ribosomal RNA (rRNA) reads from metatranscriptomic datasets to retain only protein-coding transcripts for functional and expression analysis.
-
-### 3) Quick taxonomic assignment
-
-Taxonomic assignment based on conserved marker genes (e.g., rplB)
-
-### 4) Metatranscriptomic co-assembly
-
-Co-assembly of high-quality reads into contigs
-
-### 5) Identify non-redundant genes
-
-Extract and cluster assembled transcripts or predicted coding sequences to generate a non-redundant gene set for downstream taxonomic, functional, and expression analyses.
-
-### 6) Check sequencing depth
-
-Evaluate whether sequencing depth is sufficient to capture the biodiversity signal of the transcriptionally active community.
-
-### 7) Assess assembly quality
-
-Evaluate metatranscriptome assembly quality using metrics such as contig length distribution, N50, read mapping rate, and transcript completeness to determine overall assembly reliability.
-
-### 8) Functional annotation
-
-Annotate predicted genes against functional databases to identify metabolic pathways, gene families, and biological functions represented in the metatranscriptome.
-
-### 9) Gene quantification
-
-Quantify transcript or gene abundance by mapping reads back to the non-redundant gene catalog or assembled transcripts to estimate expression levels across samples.
-
-### 10) Differential gene expression (DGE) analysis
-
-Identify genes with significant changes in expression levels between different biological conditions.
+```text
+Microbiome-Omics-Pipeline/
+├── Metagenomic_general_scripts/
+│   ├── 00_file_prepare/
+│   ├── 01_QC_check/
+│   ├── 02_depth_check/
+│   ├── 03_quick_taxo/
+│   ├── 04_co_assembly/
+│   ├── 05_to_bin_faster/
+│   ├── 06_bin/
+│   ├── 07_check_bin/
+│   ├── 08_bin_taxo/
+│   ├── 09_bin_func/
+│   └── 10_quantification/
+└── Metatranscriptomic_general_scripts/
+    ├── 00_file_prepare/
+    ├── 01_QC_check/
+    ├── 02_quick_taxo/
+    ├── 03_rm_RNA/
+    ├── 04_co_assemble/
+    ├── 05_uniq_gene/
+    ├── 06_check_seq_depth/
+    ├── 07_assemble_quallity/
+    ├── 08_func_anno/
+    ├── 09_gene_quan/
+    └── 10_DGE_analysis/
+```
